@@ -83,6 +83,14 @@ main() {
 
         json_dart_generator -f {json檔案路徑} -o {輸出檔案路徑}
         
-      
+3. 命令參數
+    ```shell script
+    -f, --file           json來源檔案
+    -o, --output         輸出dart class的完整路徑(含檔案名)
+    -n, --name           根類名稱(默認Root)
+    -p, --name_prefix    子類名稱前綴(不包含根類別)
+    -s, --name_suffix    子類名稱後綴(不包含根類別)
+    -h, --[no-]help      說明
+    ```
 
 (若於第二步驟出現 `command not found` 請參考 [此處](https://dart.cn/tools/pub/cmd/pub-global) 添加環境變數) 
