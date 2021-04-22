@@ -64,8 +64,9 @@ main() {
   
   var generator = DartCodeGenerator(
     rootClassName: 'Root', // 根類名
-    classPrefix: 'Hi', // 子類名稱前綴
-    classSuffix: 'Go', // 子類名稱後綴
+    rootClassNameWithPrefixSuffix: true, // 根類名是否套用前後綴
+    classPrefix: 'Hi', // 類名前綴
+    classSuffix: 'Go', // 類名後綴
   );
   
   // 呼叫 generate 帶入 json 字串生成 dart code

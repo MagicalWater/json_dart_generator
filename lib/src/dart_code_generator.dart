@@ -12,6 +12,9 @@ class DartCodeGenerator {
   /// 根類名
   final String rootClassName;
 
+  /// 根類名是否套用前後綴
+  final bool rootClassNameWithPrefixSuffix;
+
   /// 類名的前綴
   final String classPrefix;
 
@@ -20,6 +23,7 @@ class DartCodeGenerator {
 
   DartCodeGenerator({
     this.rootClassName,
+    this.rootClassNameWithPrefixSuffix = true,
     this.classPrefix,
     this.classSuffix,
   });
@@ -36,6 +40,7 @@ class DartCodeGenerator {
     var def = JsonDef(
       rootClassName: rootClassName,
       jsonData: jsonData,
+      rootClassNameWithPrefixSuffix: rootClassNameWithPrefixSuffix,
       classNamePrefixSuffixBuilder: (String name, bool isPrefix) {
         if (isPrefix) {
           return classPrefix;

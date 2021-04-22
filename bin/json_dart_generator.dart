@@ -44,6 +44,7 @@ void main(List<String> args) {
 
   var generator = DartCodeGenerator(
     rootClassName: name,
+    rootClassNameWithPrefixSuffix: true,
     classPrefix: namePrefix,
     classSuffix: nameSuffix,
   );

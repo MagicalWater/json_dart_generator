@@ -25,10 +25,12 @@ class JsonDef {
   JsonDef({
     String rootClassName,
     this.jsonData,
+    bool rootClassNameWithPrefixSuffix,
     ClassNamePrefixSuffixBuilder classNamePrefixSuffixBuilder,
   }) {
     _jsonStruct = ValueDef(
       rootClassName: rootClassName,
+      rootClassNameWithPrefixSuffix: rootClassNameWithPrefixSuffix,
       value: jsonData,
       classNamePrefixSuffixBuilder: classNamePrefixSuffixBuilder,
     );
@@ -81,6 +83,8 @@ class ValueDef {
   ClassType listType;
 
   String rootClassName;
+
+  bool rootClassNameWithPrefixSuffix;
 
   /// 若為多層列表時, 取得最裡面的型態
   ListInner get listInnerType {
@@ -279,7 +283,9 @@ class ValueDef {
       listType: listType,
       key: key,
       childrenDef: childrenDef ?? this.childrenDef,
-    )..classNamePrefixSuffixBuilder = classNamePrefixSuffixBuilder;
+    )
+      ..classNamePrefixSuffixBuilder = classNamePrefixSuffixBuilder
+      ..rootClassNameWithPrefixSuffix = rootClassNameWithPrefixSuffix;
   }
 
   ValueDef._({
@@ -294,6 +300,7 @@ class ValueDef {
 
   ValueDef({
     this.rootClassName,
+    this.rootClassNameWithPrefixSuffix,
     this.key,
     this.value,
     this.classNamePrefixSuffixBuilder,
@@ -488,7 +495,7 @@ class ValueDef {
   /// 完整的類名
   /// 根節點不需要加前後綴
   String get classNameFull {
-    if (isRoot) {
+    if (isRoot && !rootClassNameWithPrefixSuffix) {
       return classNameNoPrefixSuffix;
     } else {
       return '$classNamePrefix$classNameNoPrefixSuffix$classNameSuffix';

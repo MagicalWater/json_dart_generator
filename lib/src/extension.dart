@@ -197,7 +197,7 @@ extension DartCodeGenerator on ValueDef {
         }
 
         if (depth == 0) {
-          return '${isListRoot ? 'value' : key.lowerCamel()}${nextInner()}';
+          return '${isListRoot ? 'value' : (def.key ?? def.parentKey).lowerCamel()}${nextInner()}';
         } else {
           if (def.type.isList) {
             return '.map((e) => e${nextInner()}).toList()';
