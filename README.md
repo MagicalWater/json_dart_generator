@@ -1,2 +1,78 @@
-# json_dart_generator
-將 json 轉換為 dart 類別, 支持代碼以及命令行方式
+解析json生成dart code
+
+支持多種格式(含根節點為陣列)  
+當陣列內元素不同時會盡可能地轉為可互相包容的型態  
+若無法互相包容則會以dynamic的方式展示, 且底下的元素不再做解析
+
+如以下陣列element的型態將會是字串
+```json
+{
+  "element": [
+    10,
+    10.0,
+    true,
+    "20"
+  ]
+}
+```
+
+如以下陣列element的型態將會是dynamic
+```json
+{
+  "element": [
+    10,
+    {
+      "byebye": 10
+    }
+  ]
+}
+```
+
+
+## 使用方式
+使用方式有以下兩種
+
+#### 1. 透過程式碼
+將 json_dart_generator 加入 dependencies
+
+```yaml
+dev_dependencies:
+  json_dart_generator: any
+```
+
+```dart
+import 'package:json_dart_generator/json_dart_generator.dart';
+
+main() {
+  var jsonText = '''
+[
+  [
+    {
+      "aa": "cc",
+      "bb": true,
+      "cc": {
+        "ilis": [
+          10,
+          20,
+          30.0
+        ]
+      }
+    }
+  ]
+]
+  ''';
+  
+  var generator = DartCodeGenerator(
+    rootClassName: 'Root', // 根類名
+    classPrefix: 'Hi', // 子類名稱前綴
+    classSuffix: 'Go', // 子類名稱後綴
+  );
+  
+  // 呼叫 generate 帶入 json 字串生成 dart code
+  var code = generator.generate(content);
+  print(code);
+}
+```
+
+#### 2. 透過命令行
+
