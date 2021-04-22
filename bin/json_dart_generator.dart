@@ -5,11 +5,16 @@ import 'package:json_dart_generator/json_dart_generator.dart';
 
 void main(List<String> args) {
   var parser = initArgParser();
-  var result;
+  ArgResults result;
   try {
     result = parser.parse(args);
   } on Exception catch (e) {
     _handleArgError(parser, e.toString());
+  }
+
+  bool help = result['help'];
+  if (help || result.arguments.isEmpty) {
+    _handleArgError(parser);
   }
 
   String jsonPath = result['file'];
@@ -52,7 +57,7 @@ void _handleArgError(ArgParser parser, [String msg]) {
   if (msg != null) {
     stderr.write(msg);
   }
-  stdout.write('使用參數:\n\t${parser.usage.replaceAll('\n', '\n\t')}\n');
+  stdout.write('參數:\n\t${parser.usage.replaceAll('\n', '\n\t')}\n');
   exit(1);
 }
 

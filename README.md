@@ -75,4 +75,14 @@ main() {
 ```
 
 #### 2. 透過命令行
+1. 透過命令激活  
 
+        dart pub global activate json_dart_generator
+       
+2. 調用命令解析json並輸出dart class檔案    
+
+        json_dart_generator -f {json檔案路徑} -o {輸出檔案路徑}
+        
+      
+
+(若於第二步驟出現 `command not found` 請參考 [此處](https://dart.cn/tools/pub/cmd/pub-global) 添加環境變數) 
