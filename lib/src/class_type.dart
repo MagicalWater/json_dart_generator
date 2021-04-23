@@ -27,6 +27,10 @@ class ClassType {
     return primitiveTypes.contains(this);
   }
 
+  bool get isNull {
+    return this == ClassType.tNull;
+  }
+
   bool get isList {
     return this == ClassType.tListDynamic;
   }
@@ -63,16 +67,16 @@ class ClassType {
   /// 規則如下
   /// (int -> double) / bool -> string -> dynamic
   /// Class / List -> dynamic
-  ClassType mergeType(ClassType newType) {
-    if (this == ClassType.tNull) {
+  static ClassType mergeType(ClassType oriType, ClassType newType) {
+    if (oriType == null || oriType.isNull) {
       return newType;
-    } else if (newType == ClassType.tNull) {
-      return this;
-    } else if (this == newType) {
-      return this;
+    } else if (newType == null || newType.isNull) {
+      return oriType;
+    } else if (oriType == newType) {
+      return oriType;
     }
 
-    if (this == ClassType.tInt || this == ClassType.tDouble) {
+    if (oriType == ClassType.tInt || oriType == ClassType.tDouble) {
       if (newType == ClassType.tInt || newType == ClassType.tDouble) {
         return ClassType.tDouble;
       } else if (newType == ClassType.tBool || newType == ClassType.tString) {
@@ -80,7 +84,7 @@ class ClassType {
       } else {
         return ClassType.tDynamic;
       }
-    } else if (this == ClassType.tBool) {
+    } else if (oriType == ClassType.tBool) {
       if (newType == ClassType.tInt ||
           newType == ClassType.tDouble ||
           newType == ClassType.tString) {
@@ -88,7 +92,7 @@ class ClassType {
       } else {
         return ClassType.tDynamic;
       }
-    } else if (this == ClassType.tString) {
+    } else if (oriType == ClassType.tString) {
       if (newType == ClassType.tInt ||
           newType == ClassType.tDouble ||
           newType == ClassType.tBool) {

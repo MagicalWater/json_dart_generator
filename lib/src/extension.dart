@@ -117,7 +117,7 @@ extension DartCodeGenerator on ValueDef {
 
         if (depth == 0) {
           if (def.listType.isDynamic) {
-            return isListRoot ? 'json' : 'json[\'${def.key}\'] as List';
+            return isListRoot && isRoot ? 'json' : 'json[\'${def.key}\'] as List';
           } else {
             return isListRoot && isRoot
                 ? 'json${nextInner()}'

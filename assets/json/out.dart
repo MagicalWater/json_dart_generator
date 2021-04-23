@@ -19,19 +19,39 @@ class HiRootBean {
 }
 
 class HiRootAaBean {
-  int aa;
+  List<HiRootAaBbBean> bb;
 
   HiRootAaBean({
-    this.aa,
+    this.bb,
   });
 
   HiRootAaBean.fromJson(Map<String, dynamic> json) {
-    aa = json['aa'];
+    if (json['bb'] != null) {
+      bb = (json['bb'] as List).map((e) => HiRootAaBbBean.fromJson(e)).toList();
+    }
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'aa': aa,
+      'bb': bb.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class HiRootAaBbBean {
+  int cc;
+
+  HiRootAaBbBean({
+    this.cc,
+  });
+
+  HiRootAaBbBean.fromJson(Map<String, dynamic> json) {
+    cc = json['cc'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'cc': cc,
     };
   }
 }

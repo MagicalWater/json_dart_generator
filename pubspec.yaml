@@ -1,6 +1,6 @@
 name: json_dart_generator
 description: 解析json並生成Dart Class
-version: 0.9.1
+version: 0.9.3
 homepage: https://github.com/MagicalWater/json_dart_generator
 
 environment:

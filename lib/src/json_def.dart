@@ -353,7 +353,7 @@ class ValueDef {
 
   /// 在總結資料時, 與其他資料的合併
   /// 父輩元素有列表時開始進來
-  ValueDef summarizeData(ValueDef other) {
+  ValueDef _summarizeData(ValueDef other) {
     if (type == ClassType.tListDynamic &&
         other.type == ClassType.tListDynamic) {
       // 合併的同樣是列表
@@ -366,7 +366,7 @@ class ValueDef {
         var element = keyList[i];
 
         elementDef ??= element;
-        elementDef = elementDef.summarizeData(element);
+        elementDef = elementDef._summarizeData(element);
 
         // print('類型轉換: ${elementDef.type}');
         listType = elementDef.type;
@@ -383,11 +383,12 @@ class ValueDef {
       );
     } else if (type == ClassType.tObject && other.type == ClassType.tObject) {
       var keyMap = Map<String, ValueDef>.from(childrenDef);
+
       // 合併的同樣是映射
       (other.childrenDef as Map<String, ValueDef>).forEach((key, value) {
         if (keyMap.containsKey(key)) {
           // print('重複 key = $key, value = $value');
-          keyMap[key] = keyMap[key].summarizeData(value);
+          keyMap[key] = keyMap[key]._summarizeData(value);
         } else {
           keyMap[key] = value;
         }
@@ -395,16 +396,20 @@ class ValueDef {
       return copyWith(type: type, childrenDef: keyMap);
     } else {
       // 其餘類型直接返回錯誤
-      var result = type.mergeType(other.type);
+      var resultType = ClassType.mergeType(type, other.type);
+      var mergeListType = ClassType.mergeType(listType, other.listType);
+      var children = type.isNull ? other.childrenDef : childrenDef;
       // print('哈哈: $type + ${other.type} => ${result}');
-      return copyWith(type: result);
+      return copyWith(
+        type: resultType,
+        listType: mergeListType,
+        childrenDef: children,
+      );
     }
   }
 
-  /// 總結資料
-  /// 列表的值需要保持相同(或可相容的值)
-  /// 映射下相同路徑的值也需要保持相同(或可相容的值)
-  ValueDef summarize() {
+  /// 總結資料入口
+  ValueDef _summarizeEntry() {
     switch (type) {
       case ClassType.tListDynamic:
         if ((childrenDef as List).isEmpty) {
@@ -423,7 +428,7 @@ class ValueDef {
             var element = keyList[i];
 
             elementDef ??= element;
-            elementDef = elementDef.summarizeData(element);
+            elementDef = elementDef._summarizeData(element);
 
             // print('類型轉換: ${elementDef.type}');
             listType = elementDef.type;
@@ -445,13 +450,63 @@ class ValueDef {
         var keyMap = Map<String, ValueDef>.from(childrenDef);
         (childrenDef as Map<String, ValueDef>).forEach((key, value) {
           // print('key = $key, value = $value');
-          keyMap[key] = value.summarize();
+          keyMap[key] = value._summarizeEntry();
         });
         return copyWith(type: type, childrenDef: keyMap);
       default:
         // 一般基本資料
         return this;
     }
+  }
+
+  /// 遍歷所有資料, 將null型態轉為dynamic
+  ValueDef _convertNullToDynamic(ValueDef def) {
+    switch (def.type) {
+      case ClassType.tListDynamic:
+        var listType = def.listType;
+        if (listType.isNull || listType.isDynamic) {
+          listType = ClassType.tDynamic;
+          return def.copyWith(
+            type: def.type,
+            listType: listType,
+          );
+        } else {
+          var keyList = List<ValueDef>.from(def.childrenDef);
+          for (var i = 0; i < keyList.length; i++) {
+            keyList[i] = _convertNullToDynamic(keyList[i]);
+          }
+          return def.copyWith(
+            type: def.type,
+            listType: listType,
+            childrenDef: keyList,
+          );
+        }
+        break;
+      case ClassType.tObject:
+        var keyMap = Map<String, ValueDef>.from(def.childrenDef);
+        (def.childrenDef as Map<String, ValueDef>).forEach((key, value) {
+          keyMap[key] = _convertNullToDynamic(value);
+        });
+        return def.copyWith(type: def.type, childrenDef: keyMap);
+      default:
+        if (def.type.isNull) {
+          // print('空轉動態: ${key}');
+          def.type = ClassType.tDynamic;
+        }
+        return def;
+    }
+  }
+
+  /// 總結資料
+  /// 列表的值需要保持相同(或可相容的值)
+  /// 映射下相同路徑的值也需要保持相同(或可相容的值)
+  ValueDef summarize() {
+    // 總結資料
+    var def = _summarizeEntry();
+
+    // 遍歷所有資料, 將null型態轉為dynamic
+    // return def;
+    return _convertNullToDynamic(def);
   }
 
   @override
@@ -536,23 +591,12 @@ class ValueDef {
 
 extension StringExtension on String {
   String upperCamel() {
-    var text = lowerCamel();
-    if (text.length >= 2) {
-      return '${text[0].toUpperCase()}${substring(1)}';
-    } else if (text.length == 1) {
-      return '${text[0].toUpperCase()}';
-    } else {
-      return '';
-    }
-  }
-
-  String lowerCamel() {
     String capitalize(Match match) {
       var text = match[0];
       if (text.length >= 2) {
-        return '${this[0].toLowerCase()}${substring(1)}';
+        return '${text[0].toUpperCase()}${text.substring(1)}';
       } else if (text.length == 1) {
-        return '${this[0].toLowerCase()}';
+        return '${text[0].toUpperCase()}';
       } else {
         return text;
       }
@@ -560,12 +604,15 @@ extension StringExtension on String {
 
     String skip(String s) => '';
 
-    // print('lowerCamel = $this');
-
     return splitMapJoin(
       RegExp(r'[a-zA-Z0-9]+'),
       onMatch: capitalize,
       onNonMatch: skip,
     );
+  }
+
+  String lowerCamel() {
+    var upper = upperCamel();
+    return '${upper[0].toLowerCase()}${upper.substring(1)}';
   }
 }
