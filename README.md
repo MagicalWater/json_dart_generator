@@ -1,10 +1,15 @@
-解析json生成dart code
+Language: [English](README.md) | [中文](README_ZH.md)
 
-支持多種格式(含根節點為陣列)  
-當陣列內元素不同時會盡可能地轉為可互相包容的型態  
-若無法互相包容則會以dynamic的方式展示, 且底下的元素不再做解析
+# json_dart_generator
+[![Pub](https://img.shields.io/pub/v/dio.svg?style=flat-square)](https://pub.dartlang.org/packages/json_dart_generator)
 
-如以下陣列element的型態將會是字串
+Convert json data to dart class
+
+Support multiple formats(root is array / multiple array)
+When the elements in the array are different, it will be converted to a mutually inclusive type as much as possible
+If they cannot contain each other, they will be displayed in a dynamic way, and the underlying elements will no longer be analyzed
+
+ex: the type of element will be String
 ```json
 {
   "element": [
@@ -16,7 +21,7 @@
 }
 ```
 
-如以下陣列element的型態將會是dynamic
+ex: the type of element will be dynamic
 ```json
 {
   "element": [
@@ -29,11 +34,10 @@
 ```
 
 
-## 使用方式
-使用方式有以下兩種
+## Usage
 
-#### 1. 透過程式碼
-將 json_dart_generator 加入 dependencies
+#### 1. Use this package as a library
+add json_dart_generator to dependencies
 
 ```yaml
 dev_dependencies:
@@ -43,7 +47,7 @@ dev_dependencies:
 ```dart
 import 'package:json_dart_generator/json_dart_generator.dart';
 
-main() {
+void main(List<String> args) {
   var jsonText = '''
 [
   [
@@ -61,37 +65,37 @@ main() {
   ]
 ]
   ''';
-  
+
   var generator = DartCodeGenerator(
-    rootClassName: 'Root', // 根類名
-    rootClassNameWithPrefixSuffix: true, // 根類名是否套用前後綴
-    classPrefix: 'Hi', // 類名前綴
-    classSuffix: 'Go', // 類名後綴
+    rootClassName: 'Root', // root class name
+    rootClassNameWithPrefixSuffix: true, // root class name include classPrefix / classSuffix  
+    classPrefix: 'Hi', // class name prefix
+    classSuffix: 'Go', // class name suffix
   );
-  
-  // 呼叫 generate 帶入 json 字串生成 dart code
-  var code = generator.generate(content);
+
+  // call generate to generate code 
+  var code = generator.generate(jsonText);
   print(code);
 }
 ```
 
-#### 2. 透過命令行
-1. 透過命令激活  
+#### 2. Use this package as an executable
+1. Activating a package   
 
         dart pub global activate json_dart_generator
        
-2. 調用命令解析json並輸出dart class檔案    
+2. Running    
 
-        json_dart_generator -f {json檔案路徑} -o {輸出檔案路徑}
+        json_dart_generator -f {json source path} -o {output path}
         
-3. 命令參數
+3. Command Line Arguments
     ```shell script
-    -f, --file           json來源檔案
-    -o, --output         輸出dart class的完整路徑(含檔案名)
-    -n, --name           根類名稱(默認Root)
-    -p, --name_prefix    子類名稱前綴(不包含根類別)
-    -s, --name_suffix    子類名稱後綴(不包含根類別)
-    -h, --[no-]help      說明
+    -f, --file           json source file
+    -o, --output         output dart code path(include filename)
+    -n, --name           root class name(default: Root)
+    -p, --name_prefix    class name prefix
+    -s, --name_suffix    class name suffix
+    -h, --[no-]help      description
     ```
 
-(若於第二步驟出現 `command not found` 請參考 [此處](https://dart.cn/tools/pub/cmd/pub-global) 添加環境變數) 
+(If an error is thrown `command not found` on step2, check [this](https://dart.cn/tools/pub/cmd/pub-global) add path to env) 

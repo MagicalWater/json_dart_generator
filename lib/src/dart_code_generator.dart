@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:dart_style/dart_style.dart';
 
 import 'json_def.dart';
-import 'extension.dart';
 
 /// dart類別產生器
 /// 將json轉為dart code

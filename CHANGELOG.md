@@ -1,20 +1,24 @@
+## 0.9.5
+- Update README.MD
+- Add example code
+
 ## 0.9.3
-- 修正當資料值null時, 型態應該為dynamic而非Null
-- 修正key值有出現蛇底式風格文字時, 轉大駝峰小駝峰出錯
-- 修正陣列在非根節點且為dynamic的型態時, formJson方法的模板字串錯誤
-- 修正當陣列的第一個元素為null時, 後續的元素合併後仍然是null的問題
+- Fixed when value is null, the type should be dynamic
+- Fixed when json element is array and generic type is dynamic, fromJson method template Incorrect
+- Fixed when array first element is null, then array generic type will be null problem
 
 ## 0.9.2
-- 修正key值有出現蛇底式風格文字時, 轉大駝峰小駝峰出錯
+- Fixed when key is snake case will no convert to camel
 
 ## 0.9.1
 
-- DartCodeGenerator 新增參數: rootClassNameWithPrefixSuffix => 控制根類別是否套用類名前後綴
-- 修正當陣列底下皆為Object時解析出錯
+- DartCodeGenerator add parameter: 
+    rootClassNameWithPrefixSuffix - is root class name apply the prefix/suffix class name
+- Fixed throw exception when array elements is object 
 
 ## 0.9.0+1
 
-- 添加命令行調用 `json_dart_generator`
+- add json_dart_generator `json_dart_generator`
 
 ## 0.9.0
 

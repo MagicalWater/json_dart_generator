@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'class_type.dart';
 import 'extension.dart';
 
