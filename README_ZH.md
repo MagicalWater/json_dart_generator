@@ -1,7 +1,8 @@
 Language: [English](README.md) | [中文](README_ZH.md)
 
 # json_dart_generator
-[![Pub](https://img.shields.io/pub/v/dio.svg?style=flat-square)](https://pub.dartlang.org/packages/json_dart_generator)
+[![Pub](https://img.shields.io/pub/v/json_dart_generator.svg?style=flat-square)](https://pub.dartlang.org/packages/json_dart_generator)
+[![support](https://img.shields.io/badge/platform-flutter%7Cdart%20vm-ff69b4.svg?style=flat-square)](https://github.com/MagicalWater/json_dart_generator)
 
 解析json生成dart code
 

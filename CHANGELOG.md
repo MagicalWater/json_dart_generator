@@ -1,8 +1,6 @@
-## 0.9.5+1
-- Update description
-
-## 0.9.5
+## 0.9.5+2
 - Update README.MD
+- Update description
 - Add example code
 
 ## 0.9.3
