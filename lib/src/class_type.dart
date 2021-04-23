@@ -1,5 +1,3 @@
-import 'dart:math';
-
 class ClassType {
   final String _value;
 

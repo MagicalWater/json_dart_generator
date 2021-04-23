@@ -39,14 +39,14 @@ extension DartCodeGenerator on ValueDef {
       if (childrenDef is List<ValueDef>) {
         // print('目錄列表');
         var prefix = '${detectListInner(this)}';
-        text += '${prefix} value;';
+        text += '$prefix value;';
       } else if (childrenDef is Map<String, ValueDef>) {
         // print('目錄映射');
         var keyMap = childrenDef as Map<String, ValueDef>;
         keyMap.forEach((key, value) {
           if (value.type == ClassType.tListDynamic) {
             var prefix = '${detectListInner(value)}';
-            text += '${prefix} ${key.lowerCamel()};';
+            text += '$prefix ${key.lowerCamel()};';
           } else if (value.type == ClassType.tObject) {
             var findCustomDef = findCustomObject(value);
             text += '${findCustomDef.classNameFull} ${key.lowerCamel()};';
@@ -117,7 +117,9 @@ extension DartCodeGenerator on ValueDef {
 
         if (depth == 0) {
           if (def.listType.isDynamic) {
-            return isListRoot && isRoot ? 'json' : 'json[\'${def.key}\'] as List';
+            return isListRoot && isRoot
+                ? 'json'
+                : 'json[\'${def.key}\'] as List';
           } else {
             return isListRoot && isRoot
                 ? 'json${nextInner()}'
@@ -237,14 +239,14 @@ extension DartCodeGenerator on ValueDef {
 
             if (innerType.type.isObject) {
               var innerContent = 'e.toJson()';
-              body += '\'${key}\' : ${detectListInner(value, innerContent)},';
+              body += '\'$key\' : ${detectListInner(value, innerContent)},';
             } else {
-              body += '\'${key}\' : ${key.lowerCamel()},';
+              body += '\'$key\' : ${key.lowerCamel()},';
             }
           } else if (value.type == ClassType.tObject) {
-            body += '\'${key}\' : ${key.lowerCamel()}?.toJson(),';
+            body += '\'$key\' : ${key.lowerCamel()}?.toJson(),';
           } else {
-            body += '\'${key}\' : ${key.lowerCamel()},';
+            body += '\'$key\' : ${key.lowerCamel()},';
           }
         });
         body = 'return {\n$body\n};';

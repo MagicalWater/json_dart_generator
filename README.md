@@ -2,15 +2,14 @@ Language: [English](README.md) | [中文](README_ZH.md)
 
 # json_dart_generator
 [![Pub](https://img.shields.io/pub/v/json_dart_generator.svg?style=flat-square)](https://pub.dartlang.org/packages/json_dart_generator)
-[![support](https://img.shields.io/badge/platform-flutter%7Cdart%20vm-ff69b4.svg?style=flat-square)](https://github.com/MagicalWater/json_dart_generator)
 
 Convert json data to dart class
 
-Support multiple formats(root is array / multiple array)
+Support multiple formats(array root / multiple array)
 When the elements in the array are different, it will be converted to a mutually inclusive type as much as possible
 If they cannot contain each other, they will be displayed in a dynamic way, and the underlying elements will no longer be analyzed
 
-ex: the type of element will be String
+example: the type of element will be List<String>
 ```json
 {
   "element": [
@@ -22,7 +21,7 @@ ex: the type of element will be String
 }
 ```
 
-ex: the type of element will be dynamic
+example: the type of element will be List<dynamic>
 ```json
 {
   "element": [
@@ -99,4 +98,4 @@ void main(List<String> args) {
     -h, --[no-]help      description
     ```
 
-(If an error is thrown `command not found` on step2, check [this](https://dart.cn/tools/pub/cmd/pub-global) add path to env) 
+(If thrown error `command not found` on step2, check [this](https://dart.cn/tools/pub/cmd/pub-global) add path to env) 

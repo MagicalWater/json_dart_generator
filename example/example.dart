@@ -20,13 +20,13 @@ void main(List<String> args) {
   ''';
 
   var generator = DartCodeGenerator(
-    rootClassName: 'Root', // 根類名
-    rootClassNameWithPrefixSuffix: true, // 根類名是否套用前後綴
-    classPrefix: 'Hi', // 類名前綴
-    classSuffix: 'Go', // 類名後綴
+    rootClassName: 'Root', // root class name
+    rootClassNameWithPrefixSuffix: true, // root class name include classPrefix / classSuffix
+    classPrefix: 'Hi', // class name prefix
+    classSuffix: 'Go', // class name suffix
   );
 
-  // 呼叫 generate 帶入 json 字串生成 dart code
+  // call generate to generate code
   var code = generator.generate(jsonText);
   print(code);
 }

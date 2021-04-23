@@ -2,14 +2,13 @@ name: json_dart_generator
 description:
   Convert json data to dart class,
   Support multiple formats(root is array / multiple array etc).
-version: 0.9.5+2
+version: 0.9.5+3
 homepage: https://github.com/MagicalWater/json_dart_generator
 
 environment:
   sdk: '>=2.10.0 <3.0.0'
 
 dependencies:
-  convert: "^3.0.0"
   dart_style: "^2.0.0"
   args: "^2.1.0"
 

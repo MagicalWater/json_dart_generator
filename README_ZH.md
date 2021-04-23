@@ -2,7 +2,6 @@ Language: [English](README.md) | [中文](README_ZH.md)
 
 # json_dart_generator
 [![Pub](https://img.shields.io/pub/v/json_dart_generator.svg?style=flat-square)](https://pub.dartlang.org/packages/json_dart_generator)
-[![support](https://img.shields.io/badge/platform-flutter%7Cdart%20vm-ff69b4.svg?style=flat-square)](https://github.com/MagicalWater/json_dart_generator)
 
 解析json生成dart code
 
@@ -10,7 +9,7 @@ Language: [English](README.md) | [中文](README_ZH.md)
 當陣列內元素不同時會盡可能地轉為可互相包容的型態  
 若無法互相包容則會以dynamic的方式展示, 且底下的元素不再做解析
 
-如以下陣列element的型態將會是字串
+如以下陣列element的型態將會是List<String>
 ```json
 {
   "element": [
@@ -22,7 +21,7 @@ Language: [English](README.md) | [中文](README_ZH.md)
 }
 ```
 
-如以下陣列element的型態將會是dynamic
+如以下陣列element的型態將會是List<dynamic
 ```json
 {
   "element": [
