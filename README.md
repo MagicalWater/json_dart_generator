@@ -9,7 +9,7 @@ Support multiple formats(array root / multiple array)
 When the elements in the array are different, it will be converted to a mutually inclusive type as much as possible
 If they cannot contain each other, they will be displayed in a dynamic way, and the underlying elements will no longer be analyzed
 
-example: the type of element will be List<String>
+example: the type of element will be List&lt;String&gt;
 ```json
 {
   "element": [
@@ -21,7 +21,7 @@ example: the type of element will be List<String>
 }
 ```
 
-example: the type of element will be List<dynamic>
+example: the type of element will be List&lt;dynamic&gt;
 ```json
 {
   "element": [

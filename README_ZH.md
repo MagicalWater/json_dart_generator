@@ -9,7 +9,7 @@ Language: [English](README.md) | [中文](README_ZH.md)
 當陣列內元素不同時會盡可能地轉為可互相包容的型態  
 若無法互相包容則會以dynamic的方式展示, 且底下的元素不再做解析
 
-如以下陣列element的型態將會是List<String>
+如以下陣列element的型態將會是List&lt;String&gt;
 ```json
 {
   "element": [
@@ -21,7 +21,7 @@ Language: [English](README.md) | [中文](README_ZH.md)
 }
 ```
 
-如以下陣列element的型態將會是List<dynamic
+如以下陣列element的型態將會是List&lt;dynamic&gt;
 ```json
 {
   "element": [
