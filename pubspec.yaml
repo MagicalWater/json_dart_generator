@@ -1,10 +1,8 @@
 name: json_dart_generator
 description:
-  Convert json data to dart class
-  Support multiple formats(root is array / multiple array)
-  When the elements in the array are different, it will be converted to a mutually inclusive type as much as possible
-  If they cannot contain each other, they will be displayed in a dynamic way, and the underlying elements will no longer be analyzed
-version: 0.9.5
+  Convert json data to dart class,
+  Support multiple formats(root is array / multiple array etc).
+version: 0.9.5+1
 homepage: https://github.com/MagicalWater/json_dart_generator
 
 environment:
