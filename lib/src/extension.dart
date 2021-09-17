@@ -1,6 +1,5 @@
-import 'json_def.dart';
-
 import 'class_type.dart';
+import 'json_def.dart';
 
 extension DartCodeGenerator on ValueDef {
   /// 輸出轉換成 class 的字串

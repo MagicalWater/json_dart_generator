@@ -1,6 +1,7 @@
+import 'package:collection/collection.dart';
+
 import 'class_type.dart';
 import 'extension.dart';
-import 'package:collection/collection.dart';
 
 typedef ClassNamePrefixSuffixBuilder = String? Function(
   String name,
