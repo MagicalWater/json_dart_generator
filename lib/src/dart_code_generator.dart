@@ -9,16 +9,16 @@ import 'json_def.dart';
 /// 將json轉為dart code
 class DartCodeGenerator {
   /// 根類名
-  final String rootClassName;
+  final String? rootClassName;
 
   /// 根類名是否套用前後綴
   final bool rootClassNameWithPrefixSuffix;
 
   /// 類名的前綴
-  final String classPrefix;
+  final String? classPrefix;
 
   /// 類名的後綴
-  final String classSuffix;
+  final String? classSuffix;
 
   DartCodeGenerator({
     this.rootClassName,

@@ -5,11 +5,12 @@ import 'package:json_dart_generator/json_dart_generator.dart';
 
 void main(List<String> args) {
   var parser = initArgParser();
-  ArgResults result;
+  late ArgResults result;
   try {
     result = parser.parse(args);
   } on Exception catch (e) {
     _handleArgError(parser, e.toString());
+    return;
   }
 
   bool help = result['help'];
@@ -17,9 +18,9 @@ void main(List<String> args) {
     _handleArgError(parser);
   }
 
-  String jsonPath = result['file'];
-  String output = result['output'];
-  String name = result['name'];
+  String? jsonPath = result['file'];
+  String? output = result['output'];
+  String? name = result['name'];
   String namePrefix = result['name_prefix'];
   String nameSuffix = result['name_suffix'];
 
@@ -54,7 +55,7 @@ void main(List<String> args) {
   File(output).writeAsStringSync(code);
 }
 
-void _handleArgError(ArgParser parser, [String msg]) {
+void _handleArgError(ArgParser parser, [String? msg]) {
   if (msg != null) {
     stderr.write(msg);
   }

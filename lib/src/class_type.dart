@@ -1,13 +1,13 @@
+import 'package:collection/collection.dart';
+
 class ClassType {
   final String _value;
 
   const ClassType._internal(this._value);
 
   factory ClassType.name(String typeName) {
-    var find = values.firstWhere(
-      (element) => element.value == typeName,
-      orElse: () => null,
-    );
+    var find = values.firstWhereOrNull((element) => element.value == typeName);
+
     if (find == null) {
       print('沒找到: $typeName');
       throw '沒找到: $typeName';
@@ -65,7 +65,7 @@ class ClassType {
   /// 規則如下
   /// (int -> double) / bool -> string -> dynamic
   /// Class / List -> dynamic
-  static ClassType mergeType(ClassType oriType, ClassType newType) {
+  static ClassType? mergeType(ClassType? oriType, ClassType? newType) {
     if (oriType == null || oriType.isNull) {
       return newType;
     } else if (newType == null || newType.isNull) {

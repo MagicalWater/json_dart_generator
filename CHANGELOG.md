@@ -1,3 +1,7 @@
+## 1.0.0+1
+- Support null-safety
+- Fixed in some cases, it fails to determine whether the class structure is the same
+
 ## 0.9.5+4
 - Update README.MD
 - Update description

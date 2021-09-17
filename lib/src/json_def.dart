@@ -1,7 +1,8 @@
 import 'class_type.dart';
 import 'extension.dart';
+import 'package:collection/collection.dart';
 
-typedef ClassNamePrefixSuffixBuilder = String Function(
+typedef ClassNamePrefixSuffixBuilder = String? Function(
   String name,
   bool isPrefix,
 );
@@ -12,19 +13,19 @@ class JsonDef {
   final dynamic jsonData;
 
   /// json 整體結構資料
-  ValueDef _jsonStruct;
+  late ValueDef _jsonStruct;
 
   /// json 結構總結
-  ValueDef _summarizeStruct;
+  late ValueDef _summarizeStruct;
 
   // 取得所有需要自定義的class
   List<ValueDef> get allCustomObject => _summarizeStruct.customObjects;
 
   JsonDef({
-    String rootClassName,
+    String? rootClassName,
     this.jsonData,
-    bool rootClassNameWithPrefixSuffix,
-    ClassNamePrefixSuffixBuilder classNamePrefixSuffixBuilder,
+    required bool rootClassNameWithPrefixSuffix,
+    ClassNamePrefixSuffixBuilder? classNamePrefixSuffixBuilder,
   }) {
     _jsonStruct = ValueDef(
       rootClassName: rootClassName,
@@ -69,7 +70,11 @@ class ListInner {
   /// 類名
   String className;
 
-  ListInner({this.type, this.oriType, this.className});
+  ListInner({
+    required this.type,
+    required this.oriType,
+    required this.className,
+  });
 }
 
 /// 物件定義
@@ -78,14 +83,14 @@ class ValueDef {
   ClassType type;
 
   /// 若為列表, 則還會有泛型型態
-  ClassType listType;
+  ClassType? listType;
 
-  String rootClassName;
+  String? rootClassName;
 
   bool rootClassNameWithPrefixSuffix;
 
   /// 若為多層列表時, 取得最裡面的型態
-  ListInner get listInnerType {
+  ListInner? get listInnerType {
     if (listType == null) {
       return null;
     }
@@ -102,7 +107,7 @@ class ValueDef {
           return findInner((def.childrenDef as List<ValueDef>).first);
         }
       } else if (def.type == ClassType.tObject) {
-        var customObject = findCustomObject(def);
+        var customObject = findCustomObject(def)!;
         return ListInner(
           type: def.type,
           oriType: def.type,
@@ -131,13 +136,13 @@ class ValueDef {
       if (parentDef.parent == null) {
         break;
       }
-      parentDef = parentDef.parent;
+      parentDef = parentDef.parent!;
     }
     return parentDef.type.isList;
   }
 
   /// 父親
-  ValueDef parent;
+  ValueDef? parent;
 
   /// 當前節點深度
   int get depth {
@@ -159,8 +164,8 @@ class ValueDef {
   }
 
   /// 尋找距離最近的父親key
-  String get parentKey {
-    var parentDef = this;
+  String? get parentKey {
+    ValueDef? parentDef = this;
     var key = parentDef.key;
 
     while (key == null && parentDef != null) {
@@ -171,7 +176,7 @@ class ValueDef {
   }
 
   /// key 當為陣列內的元素或者最外層元素時沒有key
-  final String key;
+  final String? key;
 
   /// 原始資料
   final dynamic value;
@@ -180,7 +185,7 @@ class ValueDef {
   dynamic childrenDef;
 
   /// 類名的前後綴
-  ClassNamePrefixSuffixBuilder classNamePrefixSuffixBuilder;
+  ClassNamePrefixSuffixBuilder? classNamePrefixSuffixBuilder;
 
   /// 類名前綴
   String get classNamePrefix =>
@@ -225,7 +230,7 @@ class ValueDef {
 
   /// 取得所有的自定義object
   List<ValueDef> get _allCustomObject {
-    var parentDef = this;
+    ValueDef? parentDef = this;
     do {
       parentDef = parentDef?.parent;
     } while (parentDef?.parent != null);
@@ -233,10 +238,9 @@ class ValueDef {
   }
 
   /// 尋找符合[def]結構的自定義物件
-  ValueDef findCustomObject(ValueDef def) {
-    var find = _allCustomObject.firstWhere(
+  ValueDef? findCustomObject(ValueDef def) {
+    var find = _allCustomObject.firstWhereOrNull(
       (element) => def.isStructSame(element),
-      orElse: () => null,
     );
     return find;
   }
@@ -257,9 +261,8 @@ class ValueDef {
         // 長度相同, 接下來檢查元素是否相同
         var isSame = !thisKeyList.any((element) {
           var thisValue = element.value;
-          var otherDef = otherKeyList.firstWhere(
+          var otherDef = otherKeyList.firstWhereOrNull(
             (element) => thisValue.isStructSame(element.value),
-            orElse: () => null,
           );
 
           return otherDef == null;
@@ -267,28 +270,29 @@ class ValueDef {
 
         return isSame;
       }
-    } else if (type == other.type) {
+    } else if (type == other.type && key == other.key) {
       return true;
     }
 
     return false;
   }
 
-  ValueDef copyWith({ClassType type, ClassType listType, dynamic childrenDef}) {
+  ValueDef copyWith(
+      {ClassType? type, ClassType? listType, dynamic childrenDef}) {
     return ValueDef._(
       rootClassName: rootClassName,
       type: type ?? this.type,
       listType: listType,
       key: key,
+      rootClassNameWithPrefixSuffix: rootClassNameWithPrefixSuffix,
       childrenDef: childrenDef ?? this.childrenDef,
-    )
-      ..classNamePrefixSuffixBuilder = classNamePrefixSuffixBuilder
-      ..rootClassNameWithPrefixSuffix = rootClassNameWithPrefixSuffix;
+    )..classNamePrefixSuffixBuilder = classNamePrefixSuffixBuilder;
   }
 
   ValueDef._({
     this.rootClassName,
-    this.type,
+    required this.rootClassNameWithPrefixSuffix,
+    required this.type,
     this.listType,
     this.key,
     this.childrenDef,
@@ -298,7 +302,7 @@ class ValueDef {
 
   ValueDef({
     this.rootClassName,
-    this.rootClassNameWithPrefixSuffix,
+    required this.rootClassNameWithPrefixSuffix,
     this.key,
     this.value,
     this.classNamePrefixSuffixBuilder,
@@ -329,6 +333,7 @@ class ValueDef {
         childrenDef = (value as List)
             .map((e) => ValueDef(
                   value: e,
+                  rootClassNameWithPrefixSuffix: false,
                   classNamePrefixSuffixBuilder: classNamePrefixSuffixBuilder,
                 ))
             .toList();
@@ -339,6 +344,7 @@ class ValueDef {
                 key,
                 ValueDef(
                   key: key,
+                  rootClassNameWithPrefixSuffix: false,
                   value: value,
                   classNamePrefixSuffixBuilder: classNamePrefixSuffixBuilder,
                 )));
@@ -355,7 +361,7 @@ class ValueDef {
     if (type == ClassType.tListDynamic &&
         other.type == ClassType.tListDynamic) {
       // 合併的同樣是列表
-      ValueDef elementDef;
+      ValueDef? elementDef;
 
       var keyList = List<ValueDef>.from(childrenDef);
       keyList.addAll(other.childrenDef);
@@ -386,7 +392,7 @@ class ValueDef {
       (other.childrenDef as Map<String, ValueDef>).forEach((key, value) {
         if (keyMap.containsKey(key)) {
           // print('重複 key = $key, value = $value');
-          keyMap[key] = keyMap[key]._summarizeData(value);
+          keyMap[key] = keyMap[key]!._summarizeData(value);
         } else {
           keyMap[key] = value;
         }
@@ -395,6 +401,7 @@ class ValueDef {
     } else {
       // 其餘類型直接返回錯誤
       var resultType = ClassType.mergeType(type, other.type);
+      // print('合併: ${listType} <=> ${other.listType}');
       var mergeListType = ClassType.mergeType(listType, other.listType);
       var children = type.isNull ? other.childrenDef : childrenDef;
       // print('哈哈: $type + ${other.type} => ${result}');
@@ -418,7 +425,7 @@ class ValueDef {
             listType: listType,
           );
         } else {
-          ValueDef elementDef;
+          ValueDef? elementDef;
           // 是個列表
 
           var keyList = List<ValueDef>.from(childrenDef);
@@ -442,7 +449,6 @@ class ValueDef {
             childrenDef: listType == ClassType.tDynamic ? [] : [elementDef],
           );
         }
-        break;
       case ClassType.tObject:
         // 是個映射
         var keyMap = Map<String, ValueDef>.from(childrenDef);
@@ -461,7 +467,7 @@ class ValueDef {
   ValueDef _convertNullToDynamic(ValueDef def) {
     switch (def.type) {
       case ClassType.tListDynamic:
-        var listType = def.listType;
+        var listType = def.listType!;
         if (listType.isNull || listType.isDynamic) {
           listType = ClassType.tDynamic;
           return def.copyWith(
@@ -479,7 +485,6 @@ class ValueDef {
             childrenDef: keyList,
           );
         }
-        break;
       case ClassType.tObject:
         var keyMap = Map<String, ValueDef>.from(def.childrenDef);
         (def.childrenDef as Map<String, ValueDef>).forEach((key, value) {
@@ -518,15 +523,15 @@ class ValueDef {
       keyShow = '($key)';
     }
     if (childrenDef is Map) {
-      return '${_depthIntentSpace}Map$keyShow {\n${(childrenDef as Map).values.join(',\n')}\n${_depthIntentSpace}}';
+      return '${_depthIntentSpace}Map$keyShow {\n${(childrenDef as Map).values.join(',\n')}\n$_depthIntentSpace}';
     } else if (childrenDef is List) {
       if ((childrenDef as List).isEmpty) {
-        return '${_depthIntentSpace}List<${listType}>$keyShow []';
+        return '${_depthIntentSpace}List<$listType>$keyShow []';
       } else {
-        return '${_depthIntentSpace}List<${listType}>$keyShow [\n${(childrenDef as List).join(',\n')}\n${_depthIntentSpace}]';
+        return '${_depthIntentSpace}List<$listType>$keyShow [\n${(childrenDef as List).join(',\n')}\n$_depthIntentSpace]';
       }
     } else {
-      return '${_depthIntentSpace}$type$keyShow $childrenDef';
+      return '$_depthIntentSpace$type$keyShow $childrenDef';
     }
   }
 
@@ -578,9 +583,9 @@ class ValueDef {
         // 根節點或者列表底下, 根節點的可能已在上一個 isRoot 排除
         // 因此key若為null代表列表底下
         if (key == null) {
-          return '${parentName}'.upperCamel();
+          return '$parentName'.upperCamel();
         } else {
-          return '${parentName}${key.upperCamel()}'.upperCamel();
+          return '$parentName${key!.upperCamel()}'.upperCamel();
         }
       }
     }
@@ -591,6 +596,7 @@ extension StringExtension on String {
   String upperCamel() {
     String capitalize(Match match) {
       var text = match[0];
+      if (text == null) return '';
       if (text.length >= 2) {
         return '${text[0].toUpperCase()}${text.substring(1)}';
       } else if (text.length == 1) {

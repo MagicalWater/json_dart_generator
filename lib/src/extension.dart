@@ -13,25 +13,26 @@ extension DartCodeGenerator on ValueDef {
     String fieldText() {
       String detectListInner(ValueDef def) {
         if (def.type.isList) {
-          if (def.listType.isDynamic) {
+          var defListType = def.listType!;
+          if (defListType.isDynamic) {
             // 不需要往下
-            return 'List<${def.listType.value}>';
-          } else if (def.listType.isPrimitive) {
+            return 'List<${defListType.value}>?';
+          } else if (defListType.isPrimitive) {
             // 不需要往下
-            return 'List<${def.listType.value}>';
-          } else if (def.listType.isList) {
+            return 'List<${defListType.value}>?';
+          } else if (defListType.isList) {
             // 再往下找
             var childType =
                 detectListInner((def.childrenDef as List<ValueDef>).first);
-            return 'List<$childType>';
+            return 'List<$childType>?';
           } else {
             // 物件
             // print('物件 def = ${(def.childrenDef as List<ValueDef>).first}');
-            return 'List<${detectListInner((def.childrenDef as List<ValueDef>).first)}>';
+            return 'List<${detectListInner((def.childrenDef as List<ValueDef>).first)}>?';
           }
         }
         // print('尋找 def = $_allCustomObject');
-        var obj = findCustomObject(def);
+        var obj = findCustomObject(def)!;
         return obj.classNameFull;
       }
 
@@ -48,10 +49,10 @@ extension DartCodeGenerator on ValueDef {
             var prefix = '${detectListInner(value)}';
             text += '$prefix ${key.lowerCamel()};';
           } else if (value.type == ClassType.tObject) {
-            var findCustomDef = findCustomObject(value);
-            text += '${findCustomDef.classNameFull} ${key.lowerCamel()};';
+            var findCustomDef = findCustomObject(value)!;
+            text += '${findCustomDef.classNameFull}? ${key.lowerCamel()};';
           } else {
-            text += '${value.type} ${key.lowerCamel()};';
+            text += '${value.type}? ${key.lowerCamel()};';
           }
         });
       }
@@ -116,7 +117,8 @@ extension DartCodeGenerator on ValueDef {
         }
 
         if (depth == 0) {
-          if (def.listType.isDynamic) {
+          // 只有當為list才會進來此方法, 因此必定有listType
+          if (def.listType!.isDynamic) {
             return isListRoot && isRoot
                 ? 'json'
                 : 'json[\'${def.key}\'] as List';
@@ -127,7 +129,7 @@ extension DartCodeGenerator on ValueDef {
           }
         } else {
           if (def.type.isList) {
-            if (def.listType.isDynamic) {
+            if (def.listType!.isDynamic) {
               return '.map((e) => (e as List).toList()).toList()';
             } else {
               return '.map((e) => (e as List)${nextInner()}).toList()';
@@ -140,7 +142,7 @@ extension DartCodeGenerator on ValueDef {
 
       if (childrenDef is List<ValueDef>) {
         param = 'List<dynamic> json';
-        var innerType = listInnerType;
+        var innerType = listInnerType!;
 
         body += 'value = ${detectListInner(
           this,
@@ -155,14 +157,14 @@ extension DartCodeGenerator on ValueDef {
           }
 
           if (value.type == ClassType.tListDynamic) {
-            var innerType = value.listInnerType;
+            var innerType = value.listInnerType!;
             body +=
-                'if (json[\'${value.key}\'] != null) {\n ${(value.key ?? value.parentKey).lowerCamel()} = ${detectListInner(
+                'if (json[\'${value.key}\'] != null) {\n ${(value.key ?? value.parentKey)!.lowerCamel()} = ${detectListInner(
               value,
               listInnerContent(innerType),
             )}; \n}';
           } else if (value.type == ClassType.tObject) {
-            var findCustomDef = findCustomObject(value);
+            var findCustomDef = findCustomObject(value)!;
             body +=
                 '${key.lowerCamel()} = json[\'$key\'] != null ?  ${findCustomDef.classNameFull}.fromJson(json[\'${findCustomDef.key}\']) : null;';
           } else {
@@ -199,7 +201,7 @@ extension DartCodeGenerator on ValueDef {
         }
 
         if (depth == 0) {
-          return '${isListRoot ? 'value' : (def.key ?? def.parentKey).lowerCamel()}${nextInner()}';
+          return '${isListRoot ? 'value' : (def.key ?? def.parentKey)!.lowerCamel()}?${nextInner()}';
         } else {
           if (def.type.isList) {
             return '.map((e) => e${nextInner()}).toList()';
@@ -212,7 +214,7 @@ extension DartCodeGenerator on ValueDef {
       if (childrenDef is List<ValueDef>) {
         returnText = 'List<dynamic>';
 
-        var innerType = listInnerType;
+        var innerType = listInnerType!;
 
         if (innerType.type.isObject) {
           var innerContent = 'e.toJson()';
@@ -235,7 +237,7 @@ extension DartCodeGenerator on ValueDef {
           }
 
           if (value.type == ClassType.tListDynamic) {
-            var innerType = value.listInnerType;
+            var innerType = value.listInnerType!;
 
             if (innerType.type.isObject) {
               var innerContent = 'e.toJson()';
