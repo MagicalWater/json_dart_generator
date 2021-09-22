@@ -100,17 +100,34 @@ extension DartCodeGenerator on ValueDef {
         return '未知';
       }
 
+      String? listInnerTypeShow(ListInner innerType) {
+        if (innerType.type.isPrimitive) {
+          if (innerType.type == ClassType.tDouble) {
+            return 'double';
+          } else if (innerType.type == ClassType.tString) {
+            return 'String';
+          } else if (innerType.type == ClassType.tInt) {
+            return 'int';
+          } else if (innerType.type == ClassType.tBool) {
+            return 'bool';
+          }
+        }
+        return null;
+      }
+
       // 循環組出整體轉換, [depth] 代表深度, 從0開始
       // 第0層固定為 => (json[\'${value.key}\'] as List)
       String detectListInner(
         ValueDef def,
-        String innerContent, [
+        String innerContent,
+        String? innerTypeText, [
         int depth = 0,
       ]) {
         String nextInner() {
           return detectListInner(
             ((def.childrenDef as List<ValueDef>).first),
             innerContent,
+            innerTypeText,
             depth + 1,
           );
         }
@@ -134,7 +151,11 @@ extension DartCodeGenerator on ValueDef {
               return '.map((e) => (e as List)${nextInner()}).toList()';
             }
           } else {
-            return '.map((e) => $innerContent).toList()';
+            if (innerTypeText != null) {
+              return '.map<$innerTypeText>((e) => $innerContent).toList()';
+            } else {
+              return '.map((e) => $innerContent).toList()';
+            }
           }
         }
       }
@@ -146,6 +167,7 @@ extension DartCodeGenerator on ValueDef {
         body += 'value = ${detectListInner(
           this,
           listInnerContent(innerType),
+          listInnerTypeShow(innerType),
         )};';
       } else if (childrenDef is Map<String, ValueDef>) {
         param = 'Map<String, dynamic> json';
@@ -161,6 +183,7 @@ extension DartCodeGenerator on ValueDef {
                 'if (json[\'${value.key}\'] != null) {\n ${(value.key ?? value.parentKey)!.lowerCamel()} = ${detectListInner(
               value,
               listInnerContent(innerType),
+              listInnerTypeShow(innerType),
             )}; \n}';
           } else if (value.type == ClassType.tObject) {
             var findCustomDef = findCustomObject(value)!;

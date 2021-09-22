@@ -1,3 +1,6 @@
+## 1.0.1+1
+- Fixed the error that occurs when the internal type of the list is primitive
+
 ## 1.0.0+4
 - Support null-safety
 - Fixed in some cases, it fails to determine whether the class structure is the same
