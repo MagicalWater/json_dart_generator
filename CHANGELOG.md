@@ -1,4 +1,4 @@
-## 1.0.0+3
+## 1.0.0+4
 - Support null-safety
 - Fixed in some cases, it fails to determine whether the class structure is the same
 

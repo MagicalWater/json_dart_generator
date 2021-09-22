@@ -21,8 +21,8 @@ void main(List<String> args) {
   String? jsonPath = result['file'];
   String? output = result['output'];
   String? name = result['name'];
-  String namePrefix = result['name_prefix'];
-  String nameSuffix = result['name_suffix'];
+  String? namePrefix = result['name_prefix'];
+  String? nameSuffix = result['name_suffix'];
 
   if (jsonPath == null || jsonPath.isEmpty) {
     stderr.write('-f: json檔案 為必填\n');
