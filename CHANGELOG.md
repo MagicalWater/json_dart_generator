@@ -1,3 +1,6 @@
+## 1.0.2+1
+- Fixed when parsing json, the added element of the list is missing to consider whether it is null
+
 ## 1.0.1+1
 - Fixed the error that occurs when the internal type of the list is primitive
 

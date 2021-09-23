@@ -364,14 +364,15 @@ class ValueDef {
       // 合併的同樣是列表
       ValueDef? elementDef;
 
-      var keyList = List<ValueDef>.from(childrenDef);
-      keyList.addAll(other.childrenDef);
+      var keyList = List<ValueDef?>.from(childrenDef)
+        ..addAll(other.childrenDef)
+        ..whereNotNull();
 
       for (var i = 0; i < keyList.length; i++) {
         var element = keyList[i];
 
         elementDef ??= element;
-        elementDef = elementDef._summarizeData(element);
+        elementDef = elementDef!._summarizeData(element!);
 
         // print('類型轉換: ${elementDef.type}');
         listType = elementDef.type;
