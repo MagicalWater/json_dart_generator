@@ -238,7 +238,7 @@ extension DartCodeGenerator on ValueDef {
       }
 
       if (childrenDef is List<ValueDef>) {
-        returnText = 'List<dynamic>';
+        returnText = 'List<dynamic>?';
 
         var innerType = listInnerType!;
 

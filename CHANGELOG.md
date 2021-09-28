@@ -1,3 +1,6 @@
+## 1.0.4+1
+- Fixed when the root is an array, toJson method should be null-safety 
+
 ## 1.0.3+1
 - Fixed dynamic type should not be added "?"  at the end
 
