@@ -1,3 +1,6 @@
+## 1.0.3+1
+- Fixed dynamic type should not be added "?"  at the end
+
 ## 1.0.2+1
 - Fixed when parsing json, the added element of the list is missing to consider whether it is null
 

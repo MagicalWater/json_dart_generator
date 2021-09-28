@@ -51,7 +51,11 @@ extension DartCodeGenerator on ValueDef {
             var findCustomDef = findCustomObject(value)!;
             text += '${findCustomDef.classNameFull}? ${key.lowerCamel()};';
           } else {
-            text += '${value.type}? ${key.lowerCamel()};';
+            var typeShow = '${value.type}';
+            if (!value.type.isDynamic) {
+              typeShow += '?';
+            }
+            text += '$typeShow ${key.lowerCamel()};';
           }
         });
       }
