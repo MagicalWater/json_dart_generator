@@ -1,3 +1,7 @@
+## 1.1.0+1
+- Fixed variable does not correspond to the correct key
+- Remove the generated code contains redundant unused classes
+
 ## 1.0.4+1
 - Fixed when the root is an array, toJson method should be null-safety 
 

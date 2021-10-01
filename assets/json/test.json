@@ -1,18 +1,35 @@
-[
-  {
-    "open": "09:00",
-    "end": "10:15"
+{
+  "config": {
+    "web": ""
   },
-  {
-    "open": "10:30",
-    "end": "11:30"
+  "android": {
+    "message": "",
+    "versionName": "0.1.5",
+    "versionCode": 15,
+    "dev": {
+      "url": "check",
+      "openWeb": false
+    },
+    "product": {
+      "url": "check",
+      "openWeb": false
+    },
+    "force": 0,
+    "ignore": false
   },
-  {
-    "open": "13:30",
-    "end": "15:00"
-  },
-  {
-    "open": "21:00",
-    "end": "23:00"
+  "ios": {
+    "message": "",
+    "versionName": "0.1.5",
+    "versionCode": 15,
+    "dev": {
+      "url": "check",
+      "openWeb": true
+    },
+    "product": {
+      "url": "lalala",
+      "openWeb": true
+    },
+    "force": 0,
+    "ignore": false
   }
-]
+}

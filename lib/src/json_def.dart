@@ -217,14 +217,39 @@ class ValueDef {
           .map((e) => e.customObjects)
           .expand((element) => element)
           .toList();
-      objects.addAll(childrenObject);
+
+      // 一個一個加, 重複的去除
+      childrenObject.forEach((outerE) {
+        var isExist = objects.any((innerE) {
+          var result = innerE.isStructSame(outerE);
+          if (innerE.key == 'ios') {
+            print('ios檢查結果: $result');
+          }
+          return result;
+        });
+
+        if (!isExist) {
+          objects.add(outerE);
+        }
+      });
     } else if (childrenDef is Map<String, ValueDef>) {
       var childrenObject = (childrenDef as Map<String, ValueDef>)
           .entries
           .map((e) => e.value.customObjects)
           .expand((element) => element)
           .toList();
-      objects.addAll(childrenObject);
+
+      // 一個一個加, 重複的去除
+      childrenObject.forEach((outerE) {
+        var isExist = objects.any((innerE) {
+          var result = innerE.isStructSame(outerE);
+          return result;
+        });
+
+        if (!isExist) {
+          objects.add(outerE);
+        }
+      });
     }
     return objects;
   }
@@ -247,7 +272,7 @@ class ValueDef {
   }
 
   /// 是否擁有相同的結構
-  bool isStructSame(ValueDef other) {
+  bool isStructSame(ValueDef other, {bool debug = false}) {
     if (childrenDef is List<ValueDef> && other.childrenDef is List<ValueDef>) {
       var thisFirst = (childrenDef as List<ValueDef>).first;
       var otherFirst = (other.childrenDef as List<ValueDef>).first;
@@ -258,16 +283,41 @@ class ValueDef {
       var otherKeyList = (other.childrenDef as Map<String, ValueDef>).entries;
       var isLengthSame = thisKeyList.length == otherKeyList.length;
 
-      if (isLengthSame) {
-        // 長度相同, 接下來檢查元素是否相同
-        var isSame = !thisKeyList.any((element) {
-          var thisValue = element.value;
-          var otherDef = otherKeyList.firstWhereOrNull(
-            (element) => thisValue.isStructSame(element.value),
-          );
+      if (debug) {
+        print(
+            '結構長度 ori($key) = ${thisKeyList.length}, other(${other.key}) = ${otherKeyList.length}');
+      }
 
-          return otherDef == null;
+      if (isLengthSame) {
+        // 長度相同, 接下來檢查所有的鍵值對應
+
+        var isSame = !thisKeyList.any((element) {
+          var thisKey = element.key;
+          var thisValue = element.value;
+
+          // 尋找相同的鍵值
+
+          var findOther = otherKeyList
+              .firstWhereOrNull((element) => element.key == thisKey);
+
+          if (findOther != null) {
+            var isSame = thisValue.isStructSame(findOther.value);
+            // 要尋找的是不一樣的
+            return !isSame;
+          } else {
+            return true;
+          }
+          //
+          // var otherDef = otherKeyList.firstWhereOrNull(
+          //   (element) => thisValue.isStructSame(element.value),
+          // );
+          //
+          // return otherDef == null;
         });
+
+        if (debug) {
+          print('內部元素 $isSame');
+        }
 
         return isSame;
       }
@@ -540,6 +590,7 @@ class ValueDef {
   /// 所有自訂物件字串
   String get customObjectString {
     var text = '';
+
     customObjects.forEach((element) {
       if (text.isNotEmpty) {
         text += '\n\n';

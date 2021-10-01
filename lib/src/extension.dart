@@ -48,7 +48,12 @@ extension DartCodeGenerator on ValueDef {
             var prefix = '${detectListInner(value)}';
             text += '$prefix ${key.lowerCamel()};';
           } else if (value.type == ClassType.tObject) {
-            var findCustomDef = findCustomObject(value)!;
+            late ValueDef findCustomDef;
+            try {
+              findCustomDef = findCustomObject(value)!;
+            } catch (e) {
+              print('尋找出錯: ${value}');
+            }
             text += '${findCustomDef.classNameFull}? ${key.lowerCamel()};';
           } else {
             var typeShow = '${value.type}';
@@ -192,7 +197,7 @@ extension DartCodeGenerator on ValueDef {
           } else if (value.type == ClassType.tObject) {
             var findCustomDef = findCustomObject(value)!;
             body +=
-                '${key.lowerCamel()} = json[\'$key\'] != null ?  ${findCustomDef.classNameFull}.fromJson(json[\'${findCustomDef.key}\']) : null;';
+                '${key.lowerCamel()} = json[\'$key\'] != null ?  ${findCustomDef.classNameFull}.fromJson(json[\'${value.key}\']) : null;';
           } else {
             body += '${key.lowerCamel()} = json[\'$key\']';
 
